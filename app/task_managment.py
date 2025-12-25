@@ -80,16 +80,18 @@ def get_list_of_tasks():
     return [row_to_dict(r) for r in rows]
 
 
-def get_task_by_id(id):
+def get_task_by_id(task_id: int):
     connection = get_connection()
     cur = connection.cursor()
 
-    cur.execute("SELECT * FROM tasks WHERE id=?",(id,))
+    cur.execute("SELECT * FROM tasks WHERE id = ?", (task_id,))
+    row = cur.fetchone()
 
-    rows = cur.fetchone()
     connection.close()
+
     if not row:
-        raise HTTPException(status_code=404, detail="not found")
+        raise HTTPException(status_code=404, detail="Task not found")
+
     return row_to_dict(row)
 
 

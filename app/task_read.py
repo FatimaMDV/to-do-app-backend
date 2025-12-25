@@ -8,7 +8,7 @@ class READ(BaseModel):
     description: Optional[str] 
     starts: Optional[datetime] 
     due_date: Optional[datetime] 
-    done: bool 
+    is_done: bool 
     level: Literal["easy", "medium", "hard"]
     priority: Literal["low","normal","high"]
     created_at: datetime

@@ -90,3 +90,51 @@ def get_task_by_id(id):
     if not row:
         raise HTTPException(status_code=404, detail="not found")
     return [row_to_dict(r) for r in rows]
+
+
+def update_task(task_id:int,title: Optional[str],
+    description: Optional[str],
+    starts: Optional[datetime],
+    due_date: Optional[datetime],
+    is_done: Optional[bool],
+    level: Optional[Literal["easy", "medium", "hard"]],
+    priority: Optional[Literal["low", "normal", "high"]]):
+
+    connection = get_connection()
+    cur = connection.cursor()
+    current_task = get_task_by_id(task_id)
+
+    updated_title = title if title is not None else current_task['title']
+    updated_des = description if description is not None else current_task['description']
+    updated_level = level if level is not None else current_task['level']
+    updated_priority = priority if priority is not None else current_task['priority']
+    updated_is_done = is_done if is_done is not None else current_task["is_done"]
+    updated_is_done_int = 1 if updated_is_done else 0
+    if starts is not None:
+        updated_starts = starts.isoformat()
+    else:
+        updated_starts = current_task["starts"]
+
+    if due_date is not None:
+        updated_due_date = due_date.isoformat()
+    else:
+        updated_due_date = current_task["due_date"]
+    cur.execute("""UPDATE tasks 
+                SET title=?,
+                description=?,
+                starts=?,
+                due_date=?,
+                is_done=?,
+                level=?,
+                priority=?,
+                updated_at = CURRENT_TIMESTAMP
+    WHERE id=?""",(updated_title,updated_des,updated_starts,updated_due_date,updated_is_done_int,updated_level,updated_priority,task_id,))
+    connection.commit()
+
+    cur.execute("SELECT * FROM tasks WHERE id = ?", (task_id,))
+    row = cur.fetchone()
+    connection.close()
+
+    return row_to_dict(row)
+    
+

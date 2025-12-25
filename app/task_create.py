@@ -1,6 +1,6 @@
-from typing import Optional
+from typing import Optional, Literal
 from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 class CREATE(BaseModel):
     title: str = Field(min_length=1)
@@ -8,5 +8,7 @@ class CREATE(BaseModel):
     starts: Optional[datetime] = None
     due_date: Optional[datetime] = None
     done: bool = False
+    level: Literal["easy", "medium", "hard"] = "easy"
+    priority: Literal["low","normal","high"] = "normal"
     
     

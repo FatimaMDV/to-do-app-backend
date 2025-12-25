@@ -1,0 +1,12 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_FILE=/data/todo.db
+    volumes:
+      - todo_data:/data
+
+volumes:
+  todo_data:

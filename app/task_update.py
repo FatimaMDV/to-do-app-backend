@@ -7,6 +7,6 @@ class UPDATE(BaseModel):
     description: Optional[str] = None
     starts: Optional[datetime] = None
     due_date: Optional[datetime] = None
-    done: Optional[bool] = None
+    is_done: Optional[bool] = None
     level: Optional[Literal["easy", "medium", "hard"]] = None
     priority: Optional[Literal["low", "normal", "high"]] = None

@@ -90,7 +90,7 @@ def get_task_by_id(id):
     connection.close()
     if not row:
         raise HTTPException(status_code=404, detail="not found")
-    return [row_to_dict(r) for r in rows]
+    return row_to_dict(row)
 
 
 def update_task(task_id:int,title: Optional[str],

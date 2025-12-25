@@ -2,8 +2,9 @@ import sqlite3
 from datetime import datetime
 from fastapi import HTTPException
 from typing import Optional, Literal, List, Any, Dict
+import os
 
-database_file = "todo.db"
+database_file = os.getenv("DATABASE_FILE", "todo.db")
 
 def get_connection():
     connection = sqlite3.connect(database_file)

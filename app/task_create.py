@@ -7,7 +7,7 @@ class CREATE(BaseModel):
     description: Optional[str] = None
     starts: Optional[datetime] = None
     due_date: Optional[datetime] = None
-    done: bool = False
+    is_done: bool = False
     level: Literal["easy", "medium", "hard"] = "easy"
     priority: Literal["low","normal","high"] = "normal"
     

@@ -1,4 +1,5 @@
 import sqlite3
+from datetime import datetime
 
 database_file = "todo.db"
 
@@ -39,4 +40,30 @@ def row_to_dict(row):
         "level": row["level"],
         "priority": row["priority"],
     }
+
+def create_task(title: str,
+    description: Optional[str],
+    starts: Optional[datetime],
+    due_date: Optional[datetime],
+    is_done: bool,
+    level: Literal["easy", "medium", "hard"],
+    priority: Literal["low","normal","high"]):
+    connection = get_connection()
+    cur = connection.cursor()
+    starts_text = starts.isoformat() if starts else None
+    due_date_text = due_date.isoformat() if due_date else None
+    is_done_int = 1 if is_done else 0
+
+    cur.execute(
+        "INSERT INTO tasks (title, description,starts,due_date,is_done,level,priority) VALUES (?,?,?,?,?,?,?)",
+        (title,description,starts,due_date,done,level,priority),
+    )
+
+    connection.commit()
+    task_id = cur.lastrowid
+    cur.execute("SELECT * FROM tasks WHERE id = ?", (task_id,))
+    row = cur.fetchone()
+    conn.close()
+
+    return row_to_dict(row)
 

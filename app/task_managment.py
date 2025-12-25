@@ -1,5 +1,6 @@
 import sqlite3
 from datetime import datetime
+from fastapi import HTTPException
 
 database_file = "todo.db"
 
@@ -63,7 +64,29 @@ def create_task(title: str,
     task_id = cur.lastrowid
     cur.execute("SELECT * FROM tasks WHERE id = ?", (task_id,))
     row = cur.fetchone()
-    conn.close()
+    connection.close()
 
     return row_to_dict(row)
 
+def get_list_of_tasks():
+    connection = get_connection()
+    cur = connection.cursor()
+
+    cur.execute("SELECT * FROM tasks ORDER BY id")
+
+    rows = cur.fetchall()
+    connection.close()
+    return [row_to_dict(r) for r in rows]
+
+
+def get_task_by_id(id):
+    connection = get_connection()
+    cur = connection.cursor()
+
+    cur.execute("SELECT * FROM tasks WHERE id=?",(id,))
+
+    rows = cur.fetchall()
+    connection.close()
+    if not row:
+        raise HTTPException(status_code=404, detail="not found")
+    return [row_to_dict(r) for r in rows]

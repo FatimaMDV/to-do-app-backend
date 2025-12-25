@@ -1,6 +1,7 @@
 import sqlite3
 from datetime import datetime
 from fastapi import HTTPException
+from typing import Optional, Literal, List, Any, Dict
 
 database_file = "todo.db"
 
@@ -57,7 +58,7 @@ def create_task(title: str,
 
     cur.execute(
         "INSERT INTO tasks (title, description,starts,due_date,is_done,level,priority) VALUES (?,?,?,?,?,?,?)",
-        (title,description,starts,due_date,done,level,priority),
+        (title,description,starts_text,due_date_text,is_done_int,level,priority),
     )
 
     connection.commit()
@@ -85,7 +86,7 @@ def get_task_by_id(id):
 
     cur.execute("SELECT * FROM tasks WHERE id=?",(id,))
 
-    rows = cur.fetchall()
+    rows = cur.fetchone()
     connection.close()
     if not row:
         raise HTTPException(status_code=404, detail="not found")
@@ -136,5 +137,13 @@ def update_task(task_id:int,title: Optional[str],
     connection.close()
 
     return row_to_dict(row)
+
+def delete_task(task_id: int):
+    get_task_by_id(task_id)
+    connection = get_connection()
+    cur = connection.cursor()
+    cur.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
+    connection.commit()
+    connection.close()
     
 
